@@ -13,10 +13,10 @@
     "server": "node server/index.js"
   },
   "dependencies": {
+    "@capacitor/android": "^7.2.0",
     "@capacitor/cli": "^7.2.0",
     "@capacitor/core": "^7.2.0",
     "@capacitor/ios": "^7.2.0",
-    "@capacitor/android": "^7.2.0",
     "@hookform/resolvers": "^3.9.0",
     "@prisma/client": "^5.10.2",
     "@radix-ui/react-accordion": "^1.2.0",
