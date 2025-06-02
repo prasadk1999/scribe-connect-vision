@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  name          String
+  phone         String
+  userType      String    // "student" or "writer"
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  location      Location?
+  availability  Boolean   @default(true)
+  rating        Float?
+  specialties   String?   // Comma separated subjects
+  requestsSent    ExamRequest[] @relation("StudentRequests")
+  requestsReceived ExamRequest[] @relation("WriterRequests")
+  messages      Message[]
+  notifications Notification[]
+}
+
+model Location {
+  id        String   @id @default(uuid())
+  latitude  Float
+  longitude Float
+  address   String
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model ExamRequest {
+  id          String   @id @default(uuid())
+  examName    String
+  examDate    DateTime
+  duration    String
+  subject     String
+  status      String   // "pending", "accepted", "rejected", "completed"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  studentId   String
+  student     User     @relation("StudentRequests", fields: [studentId], references: [id])
+  writerId    String?
+  writer      User?    @relation("WriterRequests", fields: [writerId], references: [id])
+  messages    Message[]
+}
+
+model Message {
+  id            String      @id @default(uuid())
+  content       String
+  createdAt     DateTime    @default(now())
+  senderId      String
+  sender        User        @relation(fields: [senderId], references: [id])
+  examRequestId String
+  examRequest   ExamRequest @relation(fields: [examRequestId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  type      String   // "request", "message", "reminder"
+  content   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
