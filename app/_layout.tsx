@@ -4,11 +4,25 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import { StatusBar } from 'expo-status-bar';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+const customTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#3B82F6',
+    background: '#FFFFFF',
+    card: '#F8FAFC',
+    text: '#1E293B',
+    border: '#E2E8F0',
+    notification: '#10B981',
+  },
+};
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -23,22 +37,33 @@ export default function RootLayout() {
   }, [loaded]);
 
   if (!loaded) {
-    // Async font loading only occurs in development.
     return null;
   }
 
   return (
-    // TODO: Re-enable automatic dark theme support.
-    // This is currently hardcoded to light theme per user request.
-    // <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-    <ThemeProvider value={DefaultTheme}>
+    <ThemeProvider value={customTheme}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="register" options={{ title: 'Register' }} />
+        <Stack.Screen 
+          name="register" 
+          options={{ 
+            title: 'Create Account',
+            headerStyle: { backgroundColor: '#3B82F6' },
+            headerTintColor: '#FFFFFF',
+            headerTitleStyle: { fontWeight: 'bold' }
+          }} 
+        />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="chat/[id]" options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="chat/[id]" 
+          options={{ 
+            headerShown: false,
+            presentation: 'modal'
+          }} 
+        />
         <Stack.Screen name="+not-found" />
       </Stack>
+      <StatusBar style="auto" />
     </ThemeProvider>
   );
 }
